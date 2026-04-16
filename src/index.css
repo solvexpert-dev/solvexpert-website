@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;1,9..40,300;1,9..40,500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg text-primary font-dmsans font-light;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair font-normal;
+  }
+  
+  /* Reset margins for headings back to default or utility driven */
+}
+
+@layer utilities {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .hero-grid {
+      grid-template-columns: 60% 40%;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}

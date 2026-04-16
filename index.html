@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SolveXpert | AI Automation Solutions</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script type="text/javascript">
+      (function(d, t) {
+          var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+          v.onload = function() {
+            window.voiceflow.chat.load({
+              verify: { projectID: '67c37009d2f15c9ea5e6ecef' },
+              url: 'https://general-runtime.voiceflow.com',
+              versionID: 'production', 
+              voice: { 
+                url: "https://runtime-api.voiceflow.com" 
+              },
+              // Custom styling options
+              styling: {
+                position: 'right', // Position the widget on the right
+                size: 'medium', // Medium size for the launcher button
+                showInitialMessage: true, // Show an initial greeting message
+                launcher: {
+                  iconUrl: 'https://cdn-icons-png.flaticon.com/512/4712/4712027.png' // Custom AI assistant icon
+                }
+              }
+            });
+          }
+          v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+      })(document, 'script');
+    </script>
+  </body>
+</html>
