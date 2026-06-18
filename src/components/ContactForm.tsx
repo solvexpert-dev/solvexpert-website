@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Brain, ArrowLeft, Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { osLeadsSupabase } from '../lib/osLeadsSupabase';
 
 type FormData = {
   fullName: string;
@@ -39,7 +39,7 @@ const ContactForm = () => {
       ? ['fullName', 'email', 'companyName'] 
       : ['serviceInterest', 'challenges'];
     
-    const isStepValid = await trigger(fieldsToValidate as any);
+    const isStepValid = await trigger(fieldsToValidate as (keyof FormData)[]);
     if (isStepValid) setFormStep(formStep + 1);
   };
 
@@ -53,16 +53,30 @@ const ContactForm = () => {
     setSubmitError(null);
     
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([{
+      const messageParts = [`Service interest: ${data.serviceInterest}`];
+      if (data.additional_info?.trim()) {
+        messageParts.push(data.additional_info.trim());
+      }
+
+      const { error } = await osLeadsSupabase.from('leads').insert([
+        {
           full_name: data.fullName,
-          email: data.email,
           company_name: data.companyName,
-          service_interest: data.serviceInterest,
-          challenges: data.challenges,
-          additional_info: data.additional_info || null
-        }]);
+          email: data.email,
+          phone: null,
+          source: 'WEBSITE',
+          service_interest: 'NOT_SURE',
+          pain_points: [],
+          biggest_bottleneck: data.challenges,
+          automation_needs: [data.serviceInterest],
+          budget: null,
+          book_audit: false,
+          timezone: null,
+          message: messageParts.join('\n\n'),
+          status: 'NEW',
+          priority: 'MEDIUM',
+        },
+      ]);
       
       if (error) {
         throw error;
@@ -76,9 +90,13 @@ const ContactForm = () => {
           service: data.serviceInterest
         } 
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error submitting form:', error);
-      setSubmitError(error.message || 'There was an error submitting your form. Please try again later.');
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : 'There was an error submitting your form. Please try again later.'
+      );
     } finally {
       setIsSubmitting(false);
     }

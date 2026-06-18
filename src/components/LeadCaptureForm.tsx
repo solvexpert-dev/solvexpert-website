@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X, ArrowRight, ArrowLeft, Loader2, Check } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { osLeadsSupabase } from '../lib/osLeadsSupabase';
 
 interface LeadCaptureFormProps {
   isOpen: boolean;
@@ -55,9 +55,7 @@ export default function LeadCaptureForm({ isOpen, onClose }: LeadCaptureFormProp
   const {
     register,
     handleSubmit,
-    watch,
     trigger,
-    formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
       painPoints: [],
@@ -86,7 +84,7 @@ export default function LeadCaptureForm({ isOpen, onClose }: LeadCaptureFormProp
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
+      const { error } = await osLeadsSupabase
         .from('leads')
         .insert([
           {
@@ -94,12 +92,16 @@ export default function LeadCaptureForm({ isOpen, onClose }: LeadCaptureFormProp
             company_name: data.companyName,
             email: data.email,
             phone: data.phone,
+            source: 'WEBSITE',
+            service_interest: 'NOT_SURE',
             pain_points: data.painPoints,
             biggest_bottleneck: data.biggestBottleneck,
             automation_needs: data.automationNeeds,
             budget: data.budget,
             book_audit: data.bookAudit,
             timezone: data.timezone,
+            status: 'NEW',
+            priority: 'MEDIUM',
           }
         ]);
 

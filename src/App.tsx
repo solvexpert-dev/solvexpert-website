@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, type ButtonHTMLAttributes } from 'react';
 import LeadCaptureForm from './components/LeadCaptureForm';
+import ContactForm from './components/ContactForm';
+import ThankYou from './components/ThankYou';
 import { Routes, Route } from 'react-router-dom';
 import { Check, X, ArrowRight, BarChart3, Database, Repeat, Layers, Clock } from 'lucide-react';
 
-const Button = ({ children, className = '', ...props }: any) => (
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  children: React.ReactNode;
+  className?: string;
+};
+
+const Button = ({ children, className = '', ...props }: ButtonProps) => (
   <button 
     {...props}
     className={`bg-gold text-[#0A0A0A] font-dmsans font-medium px-6 py-3 rounded-none hover:brightness-90 transition-all ${className}`}
@@ -13,9 +20,9 @@ const Button = ({ children, className = '', ...props }: any) => (
 );
 
 const SectionLabel = ({ text }: { text: string }) => (
-  <div className="uppercase text-muted text-sm font-dmsans font-medium tracking-widest mb-12">
+  <h2 className="uppercase text-muted text-sm font-dmsans font-medium tracking-widest mb-12">
     {text}
-  </div>
+  </h2>
 );
 
 function HomePage() {
@@ -26,8 +33,8 @@ function HomePage() {
       <LeadCaptureForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
       
       {/* 1. Navigation */}
-      <nav className="border-b border-borderLine py-6 px-4 md:px-12 flex justify-between items-center sticky top-0 bg-bg/90 backdrop-blur-md z-50">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 50" height="40" role="img">
+      <nav className="border-b border-borderLine py-6 px-4 md:px-12 flex justify-between items-center sticky top-0 bg-bg/90 backdrop-blur-md z-50" aria-label="Main Navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 50" height="40" role="img" aria-label="SolveXpert Logo">
           <title>SolveXpert</title>
           <text x="0" y="40" fontFamily="'Playfair Display', serif" fontSize="42" fontWeight="400" letterSpacing="0" xmlSpace="preserve">
             <tspan fill="#F5F0E8">SOLVE</tspan>
@@ -45,6 +52,7 @@ function HomePage() {
       </nav>
 
       {/* 2. Hero Section */}
+      <main>
       <section className="py-24 px-4 md:px-12 max-w-[1600px] mx-auto hero-grid gap-16 items-center">
         <div className="flex flex-col space-y-8 pr-0 md:pr-12">
           <div className="flex items-center text-sm font-dmsans font-medium uppercase tracking-widest text-muted">
@@ -247,7 +255,7 @@ function HomePage() {
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-6 p-6 border border-borderLine bg-surface hover:bg-white/[0.02] transition-colors">
                 <div className="p-3 bg-bg border border-borderLine flex-shrink-0">
-                  {item.icon}
+                  {React.cloneElement(item.icon as React.ReactElement, { 'aria-hidden': 'true' })}
                 </div>
                 <div className="font-playfair text-xl">{item.title}</div>
               </div>
@@ -350,7 +358,7 @@ function HomePage() {
                 'You are ready to invest in heavy-duty infrastructure to scale.'
               ].map((item, i) => (
                 <div key={i} className="flex gap-4">
-                  <Check className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <Check className="w-6 h-6 text-green-500 flex-shrink-0" aria-hidden="true" />
                   <span className="text-primary/80 font-light">{item}</span>
                 </div>
               ))}
@@ -368,7 +376,7 @@ function HomePage() {
                 'You are looking for cheap, templated quick-fixes.'
               ].map((item, i) => (
                 <div key={i} className="flex gap-4">
-                  <X className="w-6 h-6 text-red-500 flex-shrink-0" />
+                  <X className="w-6 h-6 text-red-500 flex-shrink-0" aria-hidden="true" />
                   <span className="text-primary/80 font-light">{item}</span>
                 </div>
               ))}
@@ -482,11 +490,12 @@ function HomePage() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* 12. Footer */}
       <footer className="border-t border-borderLine bg-bg py-12 px-4 md:px-12">
         <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 50" height="40" role="img">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 50" height="40" role="img" aria-label="SolveXpert Logo">
             <title>SolveXpert</title>
             <text x="0" y="40" fontFamily="'Playfair Display', serif" fontSize="42" fontWeight="400" letterSpacing="0" xmlSpace="preserve">
               <tspan fill="#F5F0E8">SOLVE</tspan>
@@ -508,6 +517,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/contact" element={<ContactForm />} />
+      <Route path="/thank-you" element={<ThankYou />} />
       <Route path="*" element={<HomePage />} />
     </Routes>
   );
