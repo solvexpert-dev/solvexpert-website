@@ -4,7 +4,7 @@ function getRequiredEnv(name: 'VITE_OS_SUPABASE_URL' | 'VITE_OS_SUPABASE_ANON_KE
   const value = import.meta.env[name];
   if (!value) {
     throw new Error(
-      `Missing ${name}. Set it in .env (local) or Netlify/Vercel project settings, then rebuild the website.`,
+      `Missing ${name}. Set it in .env (local) or Vercel project settings, then rebuild the website.`,
     );
   }
   return value;
