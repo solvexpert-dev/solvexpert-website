@@ -4,3 +4,9 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# SPA routing for /contact, /thank-you, and client-side routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
