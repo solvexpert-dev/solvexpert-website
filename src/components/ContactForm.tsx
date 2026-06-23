@@ -3,12 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Brain, ArrowLeft, Loader2 } from 'lucide-react';
 import { osLeadsSupabase } from '../lib/osLeadsSupabase';
+import {
+  SERVICE_OPTIONS,
+  buildOsLeadPayload,
+  getServiceLabel,
+  type ServiceInterest,
+} from '../lib/leadQualification';
 
 type FormData = {
   fullName: string;
   email: string;
   companyName: string;
-  serviceInterest: 'AI Agent' | 'Lead Generation' | 'CRM Sync';
+  serviceInterest: ServiceInterest;
   challenges: string;
   additional_info?: string;
 };
@@ -28,8 +34,8 @@ const ContactForm = () => {
   } = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
-      serviceInterest: 'AI Agent'
-    }
+      serviceInterest: 'WEBSITE_DEVELOPMENT',
+    },
   });
 
   const watchedFields = watch();
@@ -53,30 +59,20 @@ const ContactForm = () => {
     setSubmitError(null);
     
     try {
-      const messageParts = [`Service interest: ${data.serviceInterest}`];
-      if (data.additional_info?.trim()) {
-        messageParts.push(data.additional_info.trim());
-      }
+      const payload = buildOsLeadPayload({
+        fullName: data.fullName,
+        companyName: data.companyName,
+        email: data.email,
+        phone: null,
+        serviceInterest: data.serviceInterest,
+        painPoints: data.challenges.trim() ? ['Other'] : [],
+        biggestBottleneck: data.challenges,
+        automationNeeds: [`Selected service: ${getServiceLabel(data.serviceInterest)}`],
+        additionalMessage: data.additional_info?.trim(),
+        bookAudit: false,
+      });
 
-      const { error } = await osLeadsSupabase.from('leads').insert([
-        {
-          full_name: data.fullName,
-          company_name: data.companyName,
-          email: data.email,
-          phone: null,
-          source: 'WEBSITE',
-          service_interest: 'NOT_SURE',
-          pain_points: [],
-          biggest_bottleneck: data.challenges,
-          automation_needs: [data.serviceInterest],
-          budget: null,
-          book_audit: false,
-          timezone: null,
-          message: messageParts.join('\n\n'),
-          status: 'NEW',
-          priority: 'MEDIUM',
-        },
-      ]);
+      const { error } = await osLeadsSupabase.from('leads').insert([payload]);
       
       if (error) {
         throw error;
@@ -87,7 +83,7 @@ const ContactForm = () => {
         state: { 
           name: data.fullName,
           email: data.email,
-          service: data.serviceInterest
+          service: getServiceLabel(data.serviceInterest),
         } 
       });
     } catch (error: unknown) {
@@ -242,13 +238,15 @@ const ContactForm = () => {
                     <select
                       id="serviceInterest"
                       className={`w-full bg-gray-800 border ${errors.serviceInterest ? 'border-red-500' : 'border-gray-700'} rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
-                      {...register('serviceInterest', { 
-                        required: 'Please select a service' 
+                      {...register('serviceInterest', {
+                        required: 'Please select a service',
                       })}
                     >
-                      <option value="AI Agent">AI Agent</option>
-                      <option value="Lead Generation">Lead Generation</option>
-                      <option value="CRM Sync">CRM Sync</option>
+                      {SERVICE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
                     </select>
                     {errors.serviceInterest && (
                       <p className="mt-1 text-sm text-red-500">{errors.serviceInterest.message}</p>
