@@ -34,7 +34,7 @@ const ContactForm = () => {
   } = useForm<FormData>({
     mode: 'onChange',
     defaultValues: {
-      serviceInterest: 'WEBSITE_DEVELOPMENT',
+      serviceInterest: 'BUSINESS_WEBSITE',
     },
   });
 

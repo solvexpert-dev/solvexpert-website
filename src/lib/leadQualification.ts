@@ -1,11 +1,12 @@
+/** Values must match OS `leads.service_interest` check constraint. */
 export type ServiceInterest =
-  | 'WEBSITE_DEVELOPMENT'
+  | 'BUSINESS_WEBSITE'
   | 'AI_CHATBOT'
-  | 'CUSTOM_BUSINESS_SYSTEM'
-  | 'RESTAURANT_MANAGEMENT_SYSTEM'
-  | 'CLINIC_MANAGEMENT_SYSTEM'
-  | 'DASHBOARD_REPORTING'
-  | 'AUTOMATION_WORKFLOW'
+  | 'BUSINESS_AUTOMATION'
+  | 'CUSTOM_SYSTEM'
+  | 'CLINIC_SYSTEM'
+  | 'RESTAURANT_SYSTEM'
+  | 'OTHER'
   | 'NOT_SURE';
 
 export type BudgetValue = 'UNDER_1K' | '1K_5K' | '5K_10K' | '10K_PLUS' | 'NOT_SURE';
@@ -37,13 +38,13 @@ export interface ServiceQuestion {
 }
 
 export const SERVICE_OPTIONS: ServiceOption[] = [
-  { label: 'Website Development', value: 'WEBSITE_DEVELOPMENT' },
+  { label: 'Website Development', value: 'BUSINESS_WEBSITE' },
   { label: 'AI Chatbot / Bot', value: 'AI_CHATBOT' },
-  { label: 'Custom Business System', value: 'CUSTOM_BUSINESS_SYSTEM' },
-  { label: 'Restaurant Management System', value: 'RESTAURANT_MANAGEMENT_SYSTEM' },
-  { label: 'Clinic Management System', value: 'CLINIC_MANAGEMENT_SYSTEM' },
-  { label: 'Dashboard / Reporting System', value: 'DASHBOARD_REPORTING' },
-  { label: 'Automation Workflow', value: 'AUTOMATION_WORKFLOW' },
+  { label: 'Custom Business System', value: 'CUSTOM_SYSTEM' },
+  { label: 'Restaurant Management System', value: 'RESTAURANT_SYSTEM' },
+  { label: 'Clinic Management System', value: 'CLINIC_SYSTEM' },
+  { label: 'Dashboard / Reporting System', value: 'OTHER' },
+  { label: 'Automation Workflow', value: 'BUSINESS_AUTOMATION' },
   { label: 'Not Sure Yet', value: 'NOT_SURE' },
 ];
 
@@ -85,7 +86,7 @@ const YES_NO: SelectOption[] = [
 ];
 
 export const SERVICE_QUESTIONS: Record<ServiceInterest, ServiceQuestion[]> = {
-  WEBSITE_DEVELOPMENT: [
+  BUSINESS_WEBSITE: [
     { id: 'has_website', label: 'Do you already have a website?', type: 'select', options: YES_NO },
     { id: 'website_type', label: 'What type of website do you need?', type: 'text', placeholder: 'e.g. Business brochure, e-commerce, landing page' },
     { id: 'pages_features', label: 'What pages or features do you need?', type: 'textarea', placeholder: 'List key pages, features, or integrations' },
@@ -97,33 +98,33 @@ export const SERVICE_QUESTIONS: Record<ServiceInterest, ServiceQuestion[]> = {
     { id: 'collect_leads', label: 'Should it collect leads?', type: 'select', options: YES_NO },
     { id: 'connect_system', label: 'Should it connect to another system?', type: 'text', placeholder: 'e.g. CRM, booking system, or none' },
   ],
-  CUSTOM_BUSINESS_SYSTEM: [
+  CUSTOM_SYSTEM: [
     { id: 'process_manage', label: 'What business process do you want to manage?', type: 'textarea' },
     { id: 'system_users', label: 'Who will use the system?', type: 'text', placeholder: 'e.g. Owners, managers, staff' },
     { id: 'data_track', label: 'What data do you need to track?', type: 'textarea' },
     { id: 'reports_needed', label: 'What reports do you need?', type: 'textarea' },
   ],
-  RESTAURANT_MANAGEMENT_SYSTEM: [
+  RESTAURANT_SYSTEM: [
     { id: 'location_count', label: 'How many locations do you have?', type: 'text' },
     { id: 'sales_tracking', label: 'Do you need sales tracking?', type: 'select', options: YES_NO },
     { id: 'stock_tracking', label: 'Do you need stock tracking?', type: 'select', options: YES_NO },
     { id: 'staff_rota', label: 'Do you need staff or rota tracking?', type: 'select', options: YES_NO },
     { id: 'owner_reports', label: 'Do you need owner reports?', type: 'select', options: YES_NO },
   ],
-  CLINIC_MANAGEMENT_SYSTEM: [
+  CLINIC_SYSTEM: [
     { id: 'patient_records', label: 'Do you need patient records?', type: 'select', options: YES_NO },
     { id: 'appointments', label: 'Do you need appointment tracking?', type: 'select', options: YES_NO },
     { id: 'prescription_history', label: 'Do you need prescription or history tracking?', type: 'select', options: YES_NO },
     { id: 'website_leads', label: 'Do you need website leads connected?', type: 'select', options: YES_NO },
     { id: 'follow_up_automation', label: 'Do you need follow-up automation?', type: 'select', options: YES_NO },
   ],
-  DASHBOARD_REPORTING: [
+  OTHER: [
     { id: 'data_to_see', label: 'What data do you want to see?', type: 'textarea' },
     { id: 'data_sources', label: 'Where does the data come from?', type: 'textarea' },
     { id: 'report_access', label: 'Who needs access to reports?', type: 'text' },
     { id: 'report_frequency', label: 'How often do you need reports?', type: 'text', placeholder: 'e.g. Daily, weekly, real-time' },
   ],
-  AUTOMATION_WORKFLOW: [
+  BUSINESS_AUTOMATION: [
     { id: 'task_automate', label: 'What repetitive task should be automated?', type: 'textarea' },
     { id: 'tools_involved', label: 'What tools or apps are involved?', type: 'textarea' },
     { id: 'automation_trigger', label: 'What should trigger the automation?', type: 'text' },
@@ -306,7 +307,7 @@ export function runPayloadSelfChecks(): { passed: number; failed: string[] } {
         fullName: 'Test User',
         email: 'web@test.com',
         phone: '+44 7700 900000',
-        serviceInterest: 'WEBSITE_DEVELOPMENT',
+        serviceInterest: 'BUSINESS_WEBSITE',
         serviceAnswers: {
           has_website: 'No',
           website_type: 'Business brochure',
@@ -326,7 +327,7 @@ export function runPayloadSelfChecks(): { passed: number; failed: string[] } {
         fullName: 'Clinic Owner',
         email: 'clinic@test.com',
         phone: '+44 7700 900001',
-        serviceInterest: 'CLINIC_MANAGEMENT_SYSTEM',
+        serviceInterest: 'CLINIC_SYSTEM',
         serviceAnswers: {
           patient_records: 'Yes',
           appointments: 'Yes',
@@ -347,7 +348,7 @@ export function runPayloadSelfChecks(): { passed: number; failed: string[] } {
         fullName: 'Restaurant Owner',
         email: 'restaurant@test.com',
         phone: '+44 7700 900002',
-        serviceInterest: 'RESTAURANT_MANAGEMENT_SYSTEM',
+        serviceInterest: 'RESTAURANT_SYSTEM',
         serviceAnswers: {
           location_count: '2',
           sales_tracking: 'Yes',
@@ -368,7 +369,7 @@ export function runPayloadSelfChecks(): { passed: number; failed: string[] } {
         fullName: 'Ops Lead',
         email: 'custom@test.com',
         phone: '+44 7700 900003',
-        serviceInterest: 'CUSTOM_BUSINESS_SYSTEM',
+        serviceInterest: 'CUSTOM_SYSTEM',
         serviceAnswers: {
           process_manage: 'Client onboarding',
           system_users: 'Managers and coordinators',
@@ -380,6 +381,46 @@ export function runPayloadSelfChecks(): { passed: number; failed: string[] } {
         budget: '5K_10K',
         timeline: '2_4_WEEKS',
         bookAudit: true,
+      },
+    },
+    {
+      name: 'Automation Workflow',
+      input: {
+        fullName: 'Automation Lead',
+        email: 'automation@test.com',
+        phone: '+44 7700 900005',
+        serviceInterest: 'BUSINESS_AUTOMATION',
+        serviceAnswers: {
+          task_automate: 'Copying invoice data between email and spreadsheet',
+          tools_involved: 'Gmail, Google Sheets, Xero',
+          automation_trigger: 'New invoice email received',
+          automation_outcome: 'Create draft bill in Xero and notify finance',
+        },
+        painPoints: ['Repetitive tasks that should be automated'],
+        biggestBottleneck: 'Manual invoice processing every week.',
+        budget: '5K_10K',
+        timeline: '2_4_WEEKS',
+        bookAudit: true,
+      },
+    },
+    {
+      name: 'Dashboard / Reporting System',
+      input: {
+        fullName: 'Reporting Lead',
+        email: 'dashboard@test.com',
+        phone: '+44 7700 900006',
+        serviceInterest: 'OTHER',
+        serviceAnswers: {
+          data_to_see: 'Sales, margin, and pipeline KPIs',
+          data_sources: 'CRM, accounting, and ad platforms',
+          report_access: 'Owners and department heads',
+          report_frequency: 'Weekly and real-time dashboard',
+        },
+        painPoints: ['No visibility or automated reporting'],
+        biggestBottleneck: 'Reports are built manually in spreadsheets.',
+        budget: '1K_5K',
+        timeline: '1_2_MONTHS',
+        bookAudit: false,
       },
     },
     {
@@ -443,7 +484,7 @@ export function runPayloadSelfChecks(): { passed: number; failed: string[] } {
   const urgentPayload = buildOsLeadPayload({
     fullName: 'Urgent Lead',
     email: 'urgent@test.com',
-    serviceInterest: 'CLINIC_MANAGEMENT_SYSTEM',
+    serviceInterest: 'CLINIC_SYSTEM',
     biggestBottleneck: 'Need this urgently.',
     budget: '10K_PLUS',
     timeline: 'ASAP',
